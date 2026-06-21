@@ -1,20 +1,39 @@
 # ==============================================================================
-# MODULE: Ingestion Monitor Baseline
-# DESCRIPTION: Tracks operational states and core metrics for Sentinel Flow
+# MODULE: Dynamic Ingestion Monitor
+# DESCRIPTION: Dynamically parses JSON configurations with error handling
 # ==============================================================================
 
-# 1. System Metadata (Data Types: Strings, Integers, Floats)
-target_cloud_service = "Amazon_RDS_Cluster"  # String
-ingestion_delay_minutes = 14                  # Integer
-compute_cost_per_hour = 24.55                # Float
+import json
+import os
 
-# 2. Operational Logic
-# Convert minutes to hours fraction, then calculate compute cost impact
-operational_loss_usd = (ingestion_delay_minutes / 60) * compute_cost_per_hour
+CONFIG_FILE = "pipeline_config.json"
 
-# 3. Telemetry Output (Simulating a production log entry)
-print("--- [SENTINEL FLOW: SYSTEM TELEMETRY] ---")
-print(f"Target Resource : {target_cloud_service}")
-print(f"Pipeline Delay  : {ingestion_delay_minutes} minutes")
-print(f"Calculated Cost : ${round(operational_loss_usd, 4)} USD")
-print("-----------------------------------------")
+# 1. Resilient File Loading (Using try-except blocks)
+try:
+    print(f"[INFO] Attempting to read runtime configuration: {CONFIG_FILE}")
+    
+    with open(CONFIG_FILE, "r") as file:
+        # Load parsing engine converting JSON to a Python Dictionary
+        config_data = json.load(file)
+        
+    print("[SUCCESS] Configuration parsed into runtime memory.")
+
+    # 2. Extracting Values from Python Dictionary via Keys
+    service = config_data["target_cloud_service"]
+    delay = config_data["ingestion_delay_minutes"]
+    rate = config_data["compute_cost_per_hour"]
+
+    # 3. Core Transformation Logic
+    operational_loss_usd = (delay / 60) * rate
+
+    # 4. Telemetry Log Output
+    print("\n--- [SENTINEL FLOW: SYSTEM TELEMETRY] ---")
+    print(f"Target Resource : {service}")
+    print(f"Pipeline Delay  : {delay} minutes")
+    print(f"Calculated Cost : ${round(operational_loss_usd, 4)} USD")
+    print("-----------------------------------------\n")
+
+except FileNotFoundError:
+    print(f"[CRITICAL ERROR] Failed execution: '{CONFIG_FILE}' missing from directory.")
+except json.JSONDecodeError:
+    print(f"[CRITICAL ERROR] Failed execution: '{CONFIG_FILE}' is malformed or corrupted.")

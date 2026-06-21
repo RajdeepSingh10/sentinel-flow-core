@@ -1,0 +1,5 @@
+{ 
+    "target_cloud_service" : "DynamoDB_Production_Instance",
+    "ingestion_delay_minutes" : 45,
+    "compute_cost_per_hour" : 18.75 
+}
