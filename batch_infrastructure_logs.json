@@ -1,0 +1,17 @@
+[
+    {
+        "target_cloud_service": "Amazon_EC2_WebAPI",
+        "ingestion_delay_minutes": 12,
+        "compute_cost_per_hour": 45.80
+    },
+    {
+        "target_cloud_service": "Amazon_S3_UserAssets",
+        "ingestion_delay_minutes": 5,
+        "compute_cost_per_hour": 4.20
+    },
+    {
+        "target_cloud_service": "AWS_Lambda_PaymentProcessor",
+        "ingestion_delay_minutes": 65,
+        "compute_cost_per_hour": 85.00
+    }
+]
